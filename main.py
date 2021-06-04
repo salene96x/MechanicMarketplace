@@ -61,7 +61,8 @@ def signup_page():
     frame_signup.option_add("*font", "Garamond 16")
     frame_signup.place(x=0, y=0, relheight=1, relwidth=1)
 
-    frame_signup.rowconfigure((0,1,2,3,4,5,6,7,8,9,10,11), weight=1)
+    frame_signup.rowconfigure((0,1,2,3,4,5,6,7,8,9,10,11,12), weight=1)
+    frame_signup.rowconfigure(9, weight=0)
     frame_signup.columnconfigure((0,1), weight=1)
 
     Label(frame_signup, text="Signing up process", font="Garamond 24").grid(row=0, columnspan=2, sticky='s')
@@ -73,8 +74,8 @@ def signup_page():
     Label(frame_signup, text="Last name : ").grid(row=6, column=0, sticky='e')
     Label(frame_signup, text="Telephone No. : ").grid(row=7, column=0, sticky='e')
     Label(frame_signup, text="User type : ").grid(row=8, column=0, sticky='e')
-    Label(frame_signup, text="Amphoe : ").grid(row=9, column=0, sticky='e')
-    Label(frame_signup, text="Province : ").grid(row=10, column=0, sticky='e')
+    Label(frame_signup, text="Amphoe : ").grid(row=10, column=0, sticky='e')
+    Label(frame_signup, text="Province : ").grid(row=11, column=0, sticky='e')
 
     Entry(frame_signup, width=20, textvariable=usr_var).grid(row=2, column=1, sticky='w')
     Entry(frame_signup, width=20, textvariable=pwd_var, show="*").grid(row=3, column=1, sticky='w')
@@ -82,16 +83,18 @@ def signup_page():
     Entry(frame_signup, width=20, textvariable=f_name_var).grid(row=5, column=1, sticky='w')
     Entry(frame_signup, width=20, textvariable=l_name_var).grid(row=6, column=1, sticky='w')
     Entry(frame_signup, width=20, textvariable=tel_var).grid(row=7, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=amphoe_var).grid(row=9, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=prov_var).grid(row=10, column=1, sticky='w')
+    Entry(frame_signup, width=20, textvariable=amphoe_var).grid(row=10, column=1, sticky='w')
+    Entry(frame_signup, width=20, textvariable=prov_var).grid(row=11, column=1, sticky='w')
 
     Radiobutton(frame_signup, text="General", variable=usr_type_var, value="General").grid(row=8, column=1, sticky='w')
-    Radiobutton(frame_signup, text="Mechanic", variable=usr_type_var, value="Mechanic").grid(row=8, column=1)
+    Radiobutton(frame_signup, text="Car Mechanical", variable=usr_type_var, value="Car").grid(row=8, column=1)
+    Radiobutton(frame_signup, text="Electrical", variable=usr_type_var, value="Electrical").grid(row=9, column=1, sticky='w')
+    Radiobutton(frame_signup, text="Others", variable=usr_type_var, value="Others").grid(row=9, column=1, pady=20)
 
     btn_confirm = Button(frame_signup, text="Confirm", width=25, height=3, command=signup_clicked)
-    btn_confirm.grid(row=11, column=0, sticky='e', padx=20)
+    btn_confirm.grid(row=12, column=0, sticky='e', padx=20)
     btn_cancel = Button(frame_signup, text="Cancel", width=25, height=3, command=frame_signup.destroy)
-    btn_cancel.grid(row=11, column=1, sticky='w', padx=20)
+    btn_cancel.grid(row=12, column=1, sticky='w', padx=20)
 
 def signup_clicked():
     cursor.execute("select ln_usr from login where ln_usr = ?",[usr_var.get()])
@@ -104,13 +107,12 @@ def signup_clicked():
                 sql = "insert into general_users values (?,?,?,?,?)"
                 cursor.execute(sql, [usr_var.get(), pwd_var.get(),f_name_var.get(),l_name_var.get(),tel_var.get()])
             else : 
-                sql = "insert into mechanic_users values (?,?,?,?,?,?,?)"
-                cursor.execute(sql, [usr_var.get(), pwd_var.get(),f_name_var.get(),l_name_var.get(),tel_var.get(), amphoe_var.get(), prov_var.get()])
+                sql = "insert into mechanic_users values (?,?,?,?,?,?,?,?)"
+                cursor.execute(sql, [usr_var.get(), pwd_var.get(),f_name_var.get(),l_name_var.get(),tel_var.get(), amphoe_var.get().capitalize(), prov_var.get().capitalize(), usr_type_var.get()])
             conn.commit()
             sql = "insert into login values (?,?)"
             cursor.execute(sql,[usr_var.get(), pwd_var.get()])
             conn.commit()
-            conn.close()
             messagebox.showinfo("Sign up : ", "Successfully signed up for an account")
             frame_signup.destroy()
             usr_entry.focus_force()
@@ -162,7 +164,7 @@ def electric_click():
     Label(frame_electric, text="Telephone No.").grid(row=1, column=3)
 
     sql = 'select mu_fname, mu_surname, mu_province, mu_tel from mechanic_users where mu_type = ?'
-    cursor.execute(sql,['electric'])
+    cursor.execute(sql,['Electrical'])
     result = cursor.fetchall()
 
     cnt = 2
@@ -187,7 +189,7 @@ def others_click():
     Label(frame_electric, text="Telephone No.").grid(row=1, column=3)
 
     sql = 'select mu_fname, mu_surname, mu_province, mu_tel from mechanic_users where mu_type = ?'
-    cursor.execute(sql,['others'])
+    cursor.execute(sql,['Others'])
     result = cursor.fetchall()
 
     cnt = 2
@@ -212,7 +214,7 @@ def car_click():
     Label(frame_electric, text="Telephone No.").grid(row=1, column=3)
 
     sql = 'select mu_fname, mu_surname, mu_province, mu_tel from mechanic_users where mu_type = ?'
-    cursor.execute(sql,['car'])
+    cursor.execute(sql,['Car'])
     result = cursor.fetchall()
 
     cnt = 2
@@ -275,7 +277,7 @@ def find_click():
     Label(frame_display, text="Telephone No.").grid(row=0, column=3)
 
     sql = "select mu_fname, mu_surname, mu_amphoe, mu_tel from mechanic_users where mu_province = ? and mu_type = ?"
-    cursor.execute(sql, [loc.get(), type.get()])
+    cursor.execute(sql, [loc.get().capitalize(), type.get().capitalize()])
     result = cursor.fetchall()
 
     cnt = 1
@@ -310,15 +312,23 @@ def send_click():
     frame_report.destroy()
 
 def login_click():
-    login_frame.destroy()
-    sql = "select * from login where ln_usr = ?"
+    sql = "select ln_pwd from login where ln_usr = ?"
     cursor.execute(sql, [usr_var.get()])
-    result = cursor.fetchall()
+    result = cursor.fetchone()
+    pwd = result[0]
     if result:
-        main_page()
-        messagebox.showinfo("Login : ", "Successfully login\nWelcome !")
+        if pwd_var.get() == pwd:
+            main_page()
+            messagebox.showinfo("Login : ", "Successfully login\nWelcome !")
+            login_frame.destroy()
+        else :
+            messagebox.showerror("Login : ", "Incorrect username or password")
+            usr_var.set("")
+            pwd_var.set("")
     else :
         messagebox.showerror("Login : ", "Incorrect username or password")
+        usr_var.set("")
+        pwd_var.set("")
 
 def connection():
     conn = connect("project_app.db")
@@ -330,3 +340,4 @@ if __name__ == "__main__":
     root = root_page()
     pwd_var, usr_var, login_frame = login_page(root)
     root.mainloop()
+    conn.close()
