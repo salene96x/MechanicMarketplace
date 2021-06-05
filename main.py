@@ -315,20 +315,23 @@ def login_click():
     sql = "select ln_pwd from login where ln_usr = ?"
     cursor.execute(sql, [usr_var.get()])
     result = cursor.fetchone()
-    pwd = result[0]
-    if result:
-        if pwd_var.get() == pwd:
-            main_page()
-            messagebox.showinfo("Login : ", "Successfully login\nWelcome !")
-            login_frame.destroy()
+    if pwd_entry.get() == "" and usr_entry.get() == "":
+        messagebox.showerror("Login : ", "No username or password entered")
+    else :
+        if result:
+            pwd = result[0]
+            if pwd_var.get() == pwd:
+                main_page()
+                messagebox.showinfo("Login : ", "Successfully login\nWelcome !")
+                login_frame.destroy()
+            else :
+                messagebox.showerror("Login : ", "Incorrect username or password")
+                usr_var.set("")
+                pwd_var.set("")
         else :
             messagebox.showerror("Login : ", "Incorrect username or password")
             usr_var.set("")
             pwd_var.set("")
-    else :
-        messagebox.showerror("Login : ", "Incorrect username or password")
-        usr_var.set("")
-        pwd_var.set("")
 
 def connection():
     conn = connect("project_app.db")
