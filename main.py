@@ -45,7 +45,7 @@ def login_page(root):
     return pwd_var, usr_var, login_frame
 
 def signup_page():
-    global usr_var, pwd_var, con_pwd_var, f_name_var, l_name_var, tel_var, usr_type_var, amphoe_var, prov_var, frame_signup
+    global usr_var, pwd_var, con_pwd_var, f_name_var, l_name_var, tel_var, usr_type_var, amphoe_var, prov_var, frame_signup, usr_entry, pwd_entry, con_pwd_entry, f_name_entry, l_name_entry, tel_entry, amphoe_entry, prov_entry
     usr_var = StringVar()
     pwd_var = StringVar()
     con_pwd_var = StringVar()
@@ -77,14 +77,22 @@ def signup_page():
     Label(frame_signup, text="Amphoe : ").grid(row=10, column=0, sticky='e')
     Label(frame_signup, text="Province : ").grid(row=11, column=0, sticky='e')
 
-    Entry(frame_signup, width=20, textvariable=usr_var).grid(row=2, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=pwd_var, show="*").grid(row=3, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=con_pwd_var, show="*").grid(row=4, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=f_name_var).grid(row=5, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=l_name_var).grid(row=6, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=tel_var).grid(row=7, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=amphoe_var).grid(row=10, column=1, sticky='w')
-    Entry(frame_signup, width=20, textvariable=prov_var).grid(row=11, column=1, sticky='w')
+    usr_entry = Entry(frame_signup, width=20, textvariable=usr_var)
+    usr_entry.grid(row=2, column=1, sticky='w')
+    pwd_entry = Entry(frame_signup, width=20, textvariable=pwd_var, show="*")
+    pwd_entry.grid(row=3, column=1, sticky='w')
+    con_pwd_entry = Entry(frame_signup, width=20, textvariable=con_pwd_var, show="*")
+    con_pwd_entry.grid(row=4, column=1, sticky='w')
+    f_name_entry = Entry(frame_signup, width=20, textvariable=f_name_var)
+    f_name_entry.grid(row=5, column=1, sticky='w')
+    l_name_entry = Entry(frame_signup, width=20, textvariable=l_name_var)
+    l_name_entry.grid(row=6, column=1, sticky='w')
+    tel_entry = Entry(frame_signup, width=20, textvariable=tel_var)
+    tel_entry.grid(row=7, column=1, sticky='w')
+    amphoe_entry = Entry(frame_signup, width=20, textvariable=amphoe_var)
+    amphoe_entry.grid(row=10, column=1, sticky='w')
+    prov_entry = Entry(frame_signup, width=20, textvariable=prov_var)
+    prov_entry.grid(row=11, column=1, sticky='w')
 
     Radiobutton(frame_signup, text="General", variable=usr_type_var, value="General").grid(row=8, column=1, sticky='w')
     Radiobutton(frame_signup, text="Car Mechanical", variable=usr_type_var, value="Car").grid(row=8, column=1)
@@ -99,7 +107,7 @@ def signup_page():
 def signup_clicked():
     cursor.execute("select ln_usr from login where ln_usr = ?",[usr_var.get()])
     result = cursor.fetchall()
-    if usr_var.get() == "" and pwd_var.get() == "" and con_pwd_var.get() == "" and f_name_var.get() == "" and l_name_var.get() == "" and tel_var.get() == "" and usr_type_var.get() == "" and amphoe_var.get() == "" and prov_var.get() == "":
+    if not (usr_entry.get() == "" and pwd_entry.get() == "" and con_pwd_entry.get() == "" and f_name_entry.get() == "" and l_name_entry.get() == "" and tel_entry.get() == "" and amphoe_entry.get() == "" and prov_entry.get()):
         messagebox.showerror("Sign up : ", "Please fill all the fields above")
     else :
         if result:
@@ -118,7 +126,6 @@ def signup_clicked():
                 conn.commit()
                 messagebox.showinfo("Sign up : ", "Successfully signed up for an account")
                 frame_signup.destroy()
-                usr_entry.focus_force()
             else :
                 messagebox.showerror("Sign up : ", "The confirmation and normal are not the same.")
 
