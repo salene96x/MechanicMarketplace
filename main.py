@@ -99,25 +99,28 @@ def signup_page():
 def signup_clicked():
     cursor.execute("select ln_usr from login where ln_usr = ?",[usr_var.get()])
     result = cursor.fetchall()
-    if result:
-        messagebox.showerror("Sign up : ", "Duplicated Username")
+    if usr_var.get() == "" and pwd_var.get() == "" and con_pwd_var.get() == "" and f_name_var.get() == "" and l_name_var.get() == "" and tel_var.get() == "" and usr_type_var.get() == "" and amphoe_var.get() == "" and prov_var.get() == "":
+        messagebox.showerror("Sign up : ", "Please fill all the fields above")
     else :
-        if pwd_var.get() == con_pwd_var.get():
-            if usr_type_var == "General":
-                sql = "insert into general_users values (?,?,?,?,?)"
-                cursor.execute(sql, [usr_var.get(), pwd_var.get(),f_name_var.get(),l_name_var.get(),tel_var.get()])
-            else : 
-                sql = "insert into mechanic_users values (?,?,?,?,?,?,?,?)"
-                cursor.execute(sql, [usr_var.get(), pwd_var.get(),f_name_var.get(),l_name_var.get(),tel_var.get(), amphoe_var.get().capitalize(), prov_var.get().capitalize(), usr_type_var.get()])
-            conn.commit()
-            sql = "insert into login values (?,?)"
-            cursor.execute(sql,[usr_var.get(), pwd_var.get()])
-            conn.commit()
-            messagebox.showinfo("Sign up : ", "Successfully signed up for an account")
-            frame_signup.destroy()
-            usr_entry.focus_force()
+        if result:
+            messagebox.showerror("Sign up : ", "Duplicated Username")
         else :
-            messagebox.showerror("Sign up : ", "The confirmation and normal are not the same.")
+            if pwd_var.get() == con_pwd_var.get():
+                if usr_type_var == "General":
+                    sql = "insert into general_users values (?,?,?,?,?)"
+                    cursor.execute(sql, [usr_var.get(), pwd_var.get(),f_name_var.get(),l_name_var.get(),tel_var.get()])
+                else : 
+                    sql = "insert into mechanic_users values (?,?,?,?,?,?,?,?)"
+                    cursor.execute(sql, [usr_var.get(), pwd_var.get(),f_name_var.get(),l_name_var.get(),tel_var.get(), amphoe_var.get().capitalize(), prov_var.get().capitalize(), usr_type_var.get()])
+                conn.commit()
+                sql = "insert into login values (?,?)"
+                cursor.execute(sql,[usr_var.get(), pwd_var.get()])
+                conn.commit()
+                messagebox.showinfo("Sign up : ", "Successfully signed up for an account")
+                frame_signup.destroy()
+                usr_entry.focus_force()
+            else :
+                messagebox.showerror("Sign up : ", "The confirmation and normal are not the same.")
 
 def main_page():
     global upper_frame, left_frame
