@@ -107,7 +107,14 @@ def signup_page():
 def signup_clicked():
     cursor.execute("select ln_usr from login where ln_usr = ?",[usr_var.get()])
     result = cursor.fetchall()
-    if not (usr_entry.get() == "" and pwd_entry.get() == "" and con_pwd_entry.get() == "" and f_name_entry.get() == "" and l_name_entry.get() == "" and tel_entry.get() == "" and amphoe_entry.get() == "" and prov_entry.get()):
+    none_check = False
+    none_list = [len(usr_entry.get()), len(pwd_entry.get()), len(con_pwd_entry.get()), len(f_name_entry.get()), len(l_name_entry.get()), len(tel_entry.get()), len(amphoe_entry.get()), len(prov_entry.get())]
+    for x in none_list:
+        if x == 0:
+            none_check = False
+        else :
+            none_check = True
+    if not none_check :
         messagebox.showerror("Sign up : ", "Please fill all the fields above")
     else :
         if result:
